@@ -5,6 +5,7 @@
 #include "RunnerCore/Runners/JavaDockerRunner.h"
 #include "RunnerCore/Runners/PythonDockerRunner.h"
 #include "RunnerCore/Runners/PhpDockerRunner.h"
+#include "RunnerCore/Runners/RustDockerRunner.h"
 #include <string>
 #include <unistd.h>
 #include <memory>
@@ -16,6 +17,7 @@ namespace {
     bool javaRunnerRegistered = (JavaDockerRunner::registerRunner(), true);
     bool pythonRunnerRegistered = (PythonDockerRunner::registerRunner(), true);
     bool phpRunnerRegistered = (PhpDockerRunner::registerRunner(), true);
+    bool rustRunnerRegistered = (RustDockerRunner::registerRunner(), true);
 }
 
 std::string parseImageOption(int& argc, char* argv[]) {
