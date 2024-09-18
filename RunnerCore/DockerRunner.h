@@ -24,7 +24,7 @@ public:
     }
 
     // Function to run the command in Docker using the appropriate image
-    void run(const std::string& command) const {
+    virtual void run(const std::string& command) const {
         // Get current working directory
         char cwd[1024];
         if (getcwd(cwd, sizeof(cwd)) == NULL) {
