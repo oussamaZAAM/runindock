@@ -1,4 +1,4 @@
 .vscode
 /test
-devenv.exe
-devenv
+runindock.exe
+runindock

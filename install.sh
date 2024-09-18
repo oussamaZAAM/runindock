@@ -10,16 +10,16 @@ case "$OS" in
 esac
 
 # Function to compile the C++ code
-compile_devenv() {
-    echo "Compiling devenv for $platform..."
+compile_runindock() {
+    echo "Compiling runindock for $platform..."
     
     # Depending on the platform, compile the correct binary
     if [ "$platform" == "Linux" ]; then
-        g++ main.cpp -o devenv
+        g++ main.cpp -o runindock
     elif [ "$platform" == "Mac" ]; then
-        g++ main.cpp -o devenv
+        g++ main.cpp -o runindock
     elif [ "$platform" == "Windows" ]; then
-        g++ main.cpp -o devenv.exe
+        g++ main.cpp -o runindock.exe
     else
         echo "Unsupported platform: $platform"
         exit 1
@@ -27,28 +27,28 @@ compile_devenv() {
 }
 
 # Function to install the executable
-install_devenv() {
-    echo "Installing devenv globally..."
+install_runindock() {
+    echo "Installing runindock globally..."
 
     if [ "$platform" == "Linux" ] || [ "$platform" == "Mac" ]; then
         # Move the compiled binary to /usr/local/bin to make it globally accessible
-        sudo mv devenv /usr/local/bin/devenv
-        sudo chmod +x /usr/local/bin/devenv
+        sudo mv runindock /usr/local/bin/runindock
+        sudo chmod +x /usr/local/bin/runindock
     elif [ "$platform" == "Windows" ]; then
         # For Windows/WSL, place it in /usr/local/bin (WSL supports this structure)
-        sudo mv devenv.exe /usr/local/bin/devenv.exe
+        sudo mv runindock.exe /usr/local/bin/runindock.exe
     else
         echo "Unsupported platform: $platform"
         exit 1
     fi
 
-    echo "devenv installed successfully. You can now run 'devenv' globally."
+    echo "runindock installed successfully. You can now run 'runindock' globally."
 }
 
 # Check if the binary is already compiled, otherwise compile it
-if [ ! -f "./devenv" ] && [ ! -f "./devenv.exe" ]; then
-    compile_devenv
+if [ ! -f "./runindock" ] && [ ! -f "./runindock.exe" ]; then
+    compile_runindock
 fi
 
 # Install the binary
-install_devenv
+install_runindock
