@@ -11,13 +11,18 @@
 #include <memory>
 #include <vector>
 
+#define DOCKER_RUNNERS \
+    X(GoDockerRunner) \
+    X(NodeDockerRunner) \
+    X(JavaDockerRunner) \
+    X(PythonDockerRunner) \
+    X(PhpDockerRunner) \
+    X(RustDockerRunner)
+
 namespace {
-    bool goRunnerRegistered = (GoDockerRunner::registerRunner(), true);
-    bool nodeRunnerRegistered = (NodeDockerRunner::registerRunner(), true);
-    bool javaRunnerRegistered = (JavaDockerRunner::registerRunner(), true);
-    bool pythonRunnerRegistered = (PythonDockerRunner::registerRunner(), true);
-    bool phpRunnerRegistered = (PhpDockerRunner::registerRunner(), true);
-    bool rustRunnerRegistered = (RustDockerRunner::registerRunner(), true);
+    #define X(runner) bool runner##Registered = (runner::registerRunner(), true);
+    DOCKER_RUNNERS
+    #undef X
 }
 
 std::string parseImageOption(int& argc, char* argv[]) {
