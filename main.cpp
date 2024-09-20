@@ -30,8 +30,7 @@ std::string parseImageOption(int& argc, char* argv[]) {
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg.find("--image=") == 0) {
-            image = arg.substr(8);  // Extract the image after "--image="
-            // Remove the --image option from the argument list
+            image = arg.substr(8);
             for (int j = i; j < argc - 1; ++j) {
                 argv[j] = argv[j + 1];
             }
@@ -42,16 +41,35 @@ std::string parseImageOption(int& argc, char* argv[]) {
     return image;
 }
 
+std::string parsePortOption(int& argc, char* argv[]) {
+    std::string port = "";
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg.find("--port=") == 0) {
+            port = arg.substr(7);
+            for (int j = i; j < argc - 1; ++j) {
+                argv[j] = argv[j + 1];
+            }
+            --argc;
+            break;
+        }
+    }
+    return port;
+}
+
 int main(int argc, char* argv[]) {
     if (argc < 3) {
-        std::cerr << "Usage: runindock <environment> <command...> [--image=<docker_image>]" << std::endl;
+        std::cerr << "Usage: runindock <environment> <command...> [--image=<docker_image>] [--port=<container_port>]" << std::endl;
         return 1;
     }
 
     // Parse the custom --image option
     std::string customImage = parseImageOption(argc, argv);
+    
+    // Parse the custom --port option
+    std::string containerPort = parsePortOption(argc, argv);
 
-    // First argument is the environment (e.g., "go", "node", "java", "javac")
+    // First argument is the environment (e.g., "go", "node", "java", "javac", ...)
     std::string environment = argv[1];
 
     // Collect all command-line arguments starting from the second one (i.e., argv[2]) into a single command string
@@ -66,7 +84,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Get the appropriate DockerRunner based on the environment and custom image
-    auto dockerRunner = getDockerRunner(environment, customImage);
+    auto dockerRunner = getDockerRunner(environment, customImage, containerPort);
 
     // Run the provided command inside Docker
     dockerRunner->run(command);

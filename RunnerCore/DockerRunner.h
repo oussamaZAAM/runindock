@@ -9,11 +9,17 @@
 class DockerRunner {
 protected:
     std::string customImage;
+    std::string port;
 
 public:
-    DockerRunner(const std::string& image = "") : customImage(image) {}
+    DockerRunner(const std::string& image = "") : customImage(image), port("") {}
 
     virtual ~DockerRunner() = default;
+
+    // Set the port for the Docker container
+    void setPort(const std::string& portValue) {
+        port = portValue;
+    }
 
     // The function that child classes will implement
     virtual std::string getDefaultImage() const = 0;
@@ -33,7 +39,14 @@ public:
         }
 
         // Construct the Docker command with the language-specific image
-        std::string dockerCommand = "docker run --rm -v \"" + std::string(cwd) + "\":/app -w /app " + getDockerImage() + " /bin/sh -c \"" + command + "\"";
+        std::string dockerCommand = "docker run --rm -v \"" + std::string(cwd) + "\":/app -w /app ";
+
+        if (!port.empty()) {
+            dockerCommand += "-p " + port + ":" + port + " ";
+        }
+        
+        // Add the image and the command to run inside the container
+        dockerCommand += getDockerImage() + " /bin/sh -c \"" + command + "\"";
 
         // Execute the Docker command
         int result = system(dockerCommand.c_str());
