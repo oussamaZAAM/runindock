@@ -22,18 +22,8 @@ public:
         });
     }
 
-    // Override the run method
-    void run(const std::string& command) const {
-        // Get current working directory
-        char cwd[1024];
-        if (getcwd(cwd, sizeof(cwd)) == NULL) {
-            perror("getcwd() error");
-            exit(1);
-        }
-
-        // Construct the Docker command with the language-specific image
-        std::string dockerCommand = "docker run --rm -v \"" + std::string(cwd) + "\":/app -w /app ";
-
+    // Override the preRunHook to update the .env file before running the command
+    void preRunHook(const std::string& dockerCommand) const override {
         // If a port is specified, update the .env file inside the Docker container
         if (!port.empty()) {
             // Command to update the PORT value in .env (or create it if not existing)
@@ -48,21 +38,7 @@ public:
             int updateEnvResult = system(updateEnvCommand.c_str());
             if (updateEnvResult != 0) {
                 std::cerr << "Error updating .env file." << std::endl;
-                return;
             }
-        }
-
-        if (!port.empty()) {
-            dockerCommand += "-p " + port + ":" + port + " ";
-        }
-        
-        // Add the image and the command to run inside the container
-        dockerCommand += getDockerImage() + " /bin/sh -c \"" + command + "\"";
-
-        // Execute the Docker command
-        int result = system(dockerCommand.c_str());
-        if (result != 0) {
-            std::cerr << "Error executing Docker command." << std::endl;
         }
     }
 };

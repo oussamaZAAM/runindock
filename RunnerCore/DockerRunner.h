@@ -29,6 +29,11 @@ public:
         return customImage.empty() ? getDefaultImage() : customImage;
     }
 
+    // Method to allow derived classes to customize pre-run steps (e.g., updating .env in NodeDockerRunner)
+    virtual void preRunHook(const std::string& dockerCommand) const {
+        // By default, do nothing; subclasses can override this to add behavior (like updating .env)
+    }
+
     // Function to run the command in Docker using the appropriate image
     virtual void run(const std::string& command) const {
         // Get current working directory
@@ -44,6 +49,9 @@ public:
         if (!port.empty()) {
             dockerCommand += "-p " + port + ":" + port + " ";
         }
+
+        // Allow subclasses to add any pre-run steps like updating .env
+        preRunHook(dockerCommand);
         
         // Add the image and the command to run inside the container
         dockerCommand += getDockerImage() + " /bin/sh -c \"" + command + "\"";
