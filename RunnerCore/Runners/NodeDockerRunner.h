@@ -23,7 +23,7 @@ public:
     }
 
     // Override the preRunHook to update the .env file before running the command
-    void preRunHook(const std::string& dockerCommand) const override {
+    void preRunHook(std::string& dockerCommand) const override {
         // If a port is specified, update the .env file inside the Docker container
         if (!port.empty()) {
             // Command to update the PORT value in .env (or create it if not existing)
