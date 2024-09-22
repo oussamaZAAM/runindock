@@ -1,6 +1,7 @@
 #ifndef DOCKERRUNNER_H
 #define DOCKERRUNNER_H
 
+#include "DockerCommandBuilder.h"
 #include <string>
 #include <iostream>
 #include <vector>
@@ -52,34 +53,44 @@ public:
         // By default, do nothing; subclasses can override this to add behavior
     }
 
-    // Function to run the command in Docker using the appropriate image
-    virtual void run(const std::string& command) const {
-        // Get current working directory
-        char cwd[1024];
+    // Method to retrieve the current working directory (cwd)
+    std::string getCwd() const {
+        char cwdBuffer[1024];
+        std::string cwd;
+
 #ifdef _WIN32
-        if (_getcwd(cwd, sizeof(cwd)) == NULL) {
+        if (_getcwd(cwdBuffer, sizeof(cwdBuffer)) == NULL) {
             perror("_getcwd() error");
             exit(1);
         }
 #else
-        if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        if (getcwd(cwdBuffer, sizeof(cwdBuffer)) == NULL) {
             perror("getcwd() error");
             exit(1);
         }
 #endif
+        return std::string(cwdBuffer);
+    }
 
-        // Construct the Docker command with the language-specific image
-        std::string dockerCommand = "docker run --rm -i -v \"" + std::string(cwd) + "\":/app -w /app ";
+    // Method to write default command and allow derived classes to override the command
+    virtual std::string buildCommand(const std::string& cwd, const std::string &command) const {
+        DockerCommandBuilder builder;
 
-        if (!port.empty()) {
-            dockerCommand += "-p " + port + ":" + port + " ";
-        }
+        // Set the basic parameters of the Docker command
+        builder.setWorkingDirectory(cwd)
+               .setDockerImage(getDockerImage())
+               .setUserCommand(command)
+               .setPort(port);
 
-        // Allow subclasses to add any pre-run steps like updating .env
-        preRunHook(dockerCommand);
+        // Build and return the full Docker command
+        return builder.build();
+    }
 
-        // Add the image and the command to run inside the container
-        dockerCommand += getDockerImage() + " /bin/sh -c \"" + command + "\"";
+    // Function to run the command in Docker using the appropriate image
+    virtual void run(std::string& command) const {
+        // Get current working directory
+        std::string cwd = getCwd();
+        std::string fullCommand = buildCommand(cwd, command);
 
 #ifdef _WIN32
         // Windows-specific implementation
@@ -127,7 +138,7 @@ public:
         // Create the child process
         BOOL success = CreateProcessA(
             NULL,
-            const_cast<char*>(dockerCommand.c_str()),
+            const_cast<char*>(fullCommand.c_str()),
             NULL,
             NULL,
             TRUE,
