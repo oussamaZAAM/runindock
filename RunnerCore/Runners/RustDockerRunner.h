@@ -22,36 +22,28 @@ public:
         });
     }
 
-    // Overriding the run function to handle Rust commands
-    void run(const std::string& command) const override {
-        // Get the current working directory
-        char cwd[1024];
-        if (getcwd(cwd, sizeof(cwd)) == NULL) {
-            perror("getcwd() error");
-            exit(1);
-        }
+     // Overriding the constructCommand function to handle Rust commands
+    std::string buildCommand(const std::string& cwd, const std::string& command) const override {
+        DockerCommandBuilder builder;
 
-        std::string dockerCommand = "docker run --rm -v \"" + std::string(cwd) + "\":/usr/src/myapp -w /usr/src/myapp ";
-        dockerCommand += getDefaultImage();  // Use the provided or default Rust image
+        // Set the basic parameters for the Docker command
+        builder.setWorkingDirectory(cwd)
+               .setDockerImage(getDockerImage())
+               .setPort(port)
+               .addPreRunCommand("apk add --no-cache musl-dev build-base");
 
-        // Check if the command is for compiling or running a Rust project
+        // Construct command based on whether it uses rustc or cargo
         if (command.find("rustc") == 0) {
-            // If the command starts with rustc, compile the specific file
             std::string file = command.substr(6);  // Extract file name after "rustc "
-            dockerCommand += " rustc " + file;
+            builder.setUserCommand("rustc " + file);
         } else if (command.find("cargo") == 0) {
-            // If the command is for running a Rust project, use cargo run
-            dockerCommand += " " + command;
+            builder.setUserCommand(command);       // Pass the cargo command as is
         } else {
             std::cerr << "Unsupported command for RustDockerRunner: " << command << std::endl;
-            return;
+            return "";
         }
 
-        // Execute the Docker command
-        int result = system(dockerCommand.c_str());
-        if (result != 0) {
-            std::cerr << "Error executing Docker command for Rust." << std::endl;
-        }
+        return builder.build();
     }
 };
 

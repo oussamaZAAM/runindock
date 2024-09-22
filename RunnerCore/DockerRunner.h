@@ -87,7 +87,7 @@ public:
     }
 
     // Function to run the command in Docker using the appropriate image
-    virtual void run(std::string& command) const {
+    void run(std::string& command) const {
         // Get current working directory
         std::string cwd = getCwd();
         std::string fullCommand = buildCommand(cwd, command);
