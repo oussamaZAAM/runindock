@@ -3,6 +3,7 @@
 
 #include "../DockerRunner.h"
 #include "../DockerRunnerRegistry.h"
+#include "../DockerCommandBuilder.h"
 
 class JavaDockerRunner : public DockerRunner {
 public:
@@ -14,12 +15,26 @@ public:
 
     // Automatically register the runner for both "java" and "javac" environments
     static void registerRunner() {
-        DockerRunnerRegistry::getInstance().registerRunner("java", [](const std::string& image) {
-            return std::make_unique<JavaDockerRunner>(image);
-        });
-        DockerRunnerRegistry::getInstance().registerRunner("javac", [](const std::string& image) {
-            return std::make_unique<JavaDockerRunner>(image);
-        });
+        auto& registry = DockerRunnerRegistry::getInstance();
+        // Register for both "java" and "javac"
+        for (const auto& env : {"java", "javac"}) {
+            registry.registerRunner(env, [](const std::string& image) {
+                return std::make_unique<JavaDockerRunner>(image);
+            });
+        }
+    }
+
+    std::string buildCommand(const std::string& cwd, const std::string& command) const override {
+        std::cout << cwd << std::endl;
+        DockerCommandBuilder builder;
+        // Set the basic parameters of the Docker command
+        builder.setWorkingDirectory(cwd)
+               .setDockerImage(getDockerImage())
+               .setUserCommand(command)
+               .setPort(port);
+
+        // Build and return the full Docker command
+        return builder.build();
     }
 };
 
