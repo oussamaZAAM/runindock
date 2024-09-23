@@ -6,7 +6,7 @@
 
 class NodeDockerRunner : public DockerRunner {
 public:
-    NodeDockerRunner(const std::string& image = "") : DockerRunner(image) {}
+    NodeDockerRunner(const std::string& image = "") : DockerRunner() {}
 
     std::string getDefaultImage() const override {
         return "node:alpine";
@@ -23,6 +23,8 @@ public:
     }
 
     void preRunHook(std::string& dockerCommand) const {
+        std::string port = getOption("port");
+        
         // If a port is specified, update the .env file inside the Docker container
         if (!port.empty()) {
             // Command to update the PORT value in .env (or create it if not existing)

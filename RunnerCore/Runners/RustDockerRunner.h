@@ -6,7 +6,7 @@
 
 class RustDockerRunner : public DockerRunner {
 public:
-    RustDockerRunner(const std::string& image = "") : DockerRunner(image) {}
+    RustDockerRunner(const std::string& image = "") : DockerRunner() {}
 
     std::string getDefaultImage() const override {
         return "rust:alpine";
@@ -25,6 +25,8 @@ public:
      // Overriding the constructCommand function to handle Rust commands
     std::string buildCommand(const std::string& cwd, const std::string& command) const override {
         DockerCommandBuilder builder;
+
+        std::string port = getOption("port");
 
         // Set the basic parameters for the Docker command
         builder.setWorkingDirectory(cwd)

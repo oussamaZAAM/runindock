@@ -6,7 +6,7 @@
 
 class PythonDockerRunner : public DockerRunner {
 public:
-    PythonDockerRunner(const std::string& image = "") : DockerRunner(image) {}
+    PythonDockerRunner(const std::string& image = "") : DockerRunner() {}
 
     std::string getDefaultImage() const override {
         return "python:alpine";
@@ -29,6 +29,8 @@ public:
         // Get the site-packages path dynamically by running a Python command
         std::string sitePackagesPath = getSitePackagesPath();
 
+        std::string port = getOption("port");
+        
         // Set the basic Docker command parameters
         builder.setWorkingDirectory(cwd)
                .setDockerImage(getDockerImage())

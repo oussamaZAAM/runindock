@@ -6,7 +6,7 @@
 
 class PhpDockerRunner : public DockerRunner {
 public:
-    PhpDockerRunner(const std::string& image = "") : DockerRunner(image) {}
+    PhpDockerRunner(const std::string& image = "") : DockerRunner() {}
 
     std::string getDefaultImage() const override {
         return "php:alpine";

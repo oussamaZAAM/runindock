@@ -1,12 +1,13 @@
 #ifndef GODOCKERRUNNER_H
 #define GODOCKERRUNNER_H
 
+#include <memory>
 #include "../DockerRunner.h"
 #include "../DockerRunnerRegistry.h"
 
 class GoDockerRunner : public DockerRunner {
 public:
-    GoDockerRunner(const std::string& image = "") : DockerRunner(image) {}
+    GoDockerRunner(const std::string& image = "") : DockerRunner() {}
 
     std::string getDefaultImage() const override {
         return "golang:alpine";

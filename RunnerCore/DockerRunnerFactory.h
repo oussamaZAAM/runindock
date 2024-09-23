@@ -8,7 +8,7 @@
 std::unique_ptr<DockerRunner> getDockerRunner(const std::string& environment, const std::string& customImage = "", const std::string& port = "") {
     auto runner = DockerRunnerRegistry::getInstance().createRunner(environment, customImage);
     if (!port.empty()) {
-        runner->setPort(port);  // Set the port if provided
+        runner->setOption("port", port);  // Set the port if provided
     }
     return runner;
 }
