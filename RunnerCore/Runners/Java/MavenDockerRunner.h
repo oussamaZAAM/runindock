@@ -15,7 +15,7 @@ public:
 
     // Return Maven's default image
     virtual std::string getDefaultImage() const override {
-        return "maven:alpine";  // Specific Maven image with JDK 11
+        return "maven:latest";  // Specific Maven image with JDK 11
     }
 
     // Automatically register the runner for "maven" environment
@@ -34,6 +34,7 @@ public:
         builder.setWorkingDirectory(cwd)
                .setDockerImage(getDockerImage())
                .setUserCommand(command)
+               .addVolume("maven_shared_vol:/root/.m2")
                .setPort(getOption("port"));
 
         // Build and return the full Docker command
