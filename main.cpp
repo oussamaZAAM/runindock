@@ -2,7 +2,7 @@
 #include "RunnerCore/DockerRunnerFactory.h"
 #include "RunnerCore/Runners/GoDockerRunner.h"
 #include "RunnerCore/Runners/NodeDockerRunner.h"
-#include "RunnerCore/Runners/JavaDockerRunner.h"
+#include "RunnerCore/Runners/Java/JavaDockerRunner.h"
 #include "RunnerCore/Runners/PythonDockerRunner.h"
 #include "RunnerCore/Runners/PhpDockerRunner.h"
 #include "RunnerCore/Runners/RustDockerRunner.h"
@@ -25,36 +25,30 @@ namespace {
     #undef X
 }
 
-std::string parseImageOption(int& argc, char* argv[]) {
-    std::string image = "";
-    for (int i = 1; i < argc; ++i) {
-        std::string arg = argv[i];
-        if (arg.find("--image=") == 0) {
-            image = arg.substr(8);
-            for (int j = i; j < argc - 1; ++j) {
-                argv[j] = argv[j + 1];
-            }
-            --argc;
-            break;
-        }
-    }
-    return image;
-}
+// Function to parse all command-line options into a map
+std::map<std::string, std::string> parseOptions(int& argc, char* argv[]) {
+    std::map<std::string, std::string> options;
 
-std::string parsePortOption(int& argc, char* argv[]) {
-    std::string port = "";
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
-        if (arg.find("--port=") == 0) {
-            port = arg.substr(7);
+
+        // Look for options in the form --key=value
+        size_t pos = arg.find("=");
+        if (pos != std::string::npos && arg.substr(0, 2) == "--") {
+            std::string key = arg.substr(2, pos - 2);   // Extract the key (without "--")
+            std::string value = arg.substr(pos + 1);    // Extract the value
+            options[key] = value;
+
+            // Remove this option from argv
             for (int j = i; j < argc - 1; ++j) {
                 argv[j] = argv[j + 1];
             }
             --argc;
-            break;
+            --i;
         }
     }
-    return port;
+
+    return options;
 }
 
 int main(int argc, char* argv[]) {
@@ -63,11 +57,8 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // Parse the custom --image option
-    std::string customImage = parseImageOption(argc, argv);
-    
-    // Parse the custom --port option
-    std::string containerPort = parsePortOption(argc, argv);
+    // Parse all command-line options into a map
+    std::map<std::string, std::string> options = parseOptions(argc, argv);
 
     // First argument is the environment (e.g., "go", "node", "java", "javac", ...)
     std::string environment = argv[1];
@@ -84,7 +75,8 @@ int main(int argc, char* argv[]) {
     }
 
     // Get the appropriate DockerRunner based on the environment and custom image
-    auto dockerRunner = getDockerRunner(environment, customImage, containerPort);
+    auto dockerRunner = getDockerRunner(environment);
+    dockerRunner->setOptions(options);
 
     // Run the provided command inside Docker
     dockerRunner->run(command);
