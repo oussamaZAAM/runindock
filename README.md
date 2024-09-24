@@ -5,7 +5,7 @@
 ## Features
 - **Docker-based environments**: Execute commands inside isolated Docker containers without manually writing Docker commands.
 - **Language support**: Easily run Go, Node.js, and more.
-- **Custom Docker images**: Override default images with the `--image` option.
+- **Custom Docker images**: Override default images with the `--rid:image` option.
 - **Cross-platform support**: Works on Linux, macOS, and WSL.
 
 ## Installation
@@ -44,43 +44,45 @@ runindock node app.js
 ```
 
 ### Overriding the Docker Image:
-By default, `runindock` uses lightweight Docker images like `golang:alpine` and `node:alpine`. You can override this by specifying a custom image with the `--image` option.
+By default, `runindock` uses lightweight Docker images like `golang:alpine` and `node:alpine`. You can override this by specifying a custom image with the `--rid:image` option.
 
 #### Example:
 ```
-runindock go run main.go --image="golang:latest"
+runindock go run main.go --rid:image="golang:latest"
 ```
 
 ### Exposing a Port:
-If your application needs to expose a specific port (e.g., when running a web server), you can use the `--port` option to bind a port from the Docker container to your local machine.
+If your application needs to expose a specific port (e.g., when running a web server), you can use the `--rid:port` option to bind a port from the Docker container to your local machine.
 
 #### Example:
 ```
-runindock node app.js --port=8080
+runindock node app.js --rid:port=8080
 ```
 
-In this example, the `--port=8080` option will map the container's port 8080 to your local machine, allowing you to access the application at `localhost:8080`.
+In this example, the `--rid:port=8080` option will map the container's port 8080 to your local machine, allowing you to access the application at `localhost:8080`.
 
 ### Specifying a Build Tool:
-For environments like Java, which use build tools like Maven or Gradle, you can specify the build tool with the `--buildTool` option to ensure the correct environment is used inside the Docker container.
+For environments like Java, which use build tools like Maven or Gradle, you can specify the build tool with the `--rid:tool` option to ensure the correct environment is used inside the Docker container.
 
 #### Example:
 ```
-runindock java -jar app.jar --buildTool=maven
+runindock java -jar app.jar --rid:tool=maven
 ```
 
-In this example, the `--buildTool=maven` option ensures that the application will be built and run using Maven inside the Docker container.
+In this example, the `--rid:tool=maven` option ensures that the application will be built and run using Maven inside the Docker container.
 
 ### General Syntax:
 ```
-runindock <environment> <command> [--image=<docker_image>] [--port=<container_port>] [--buildTool=<build_tool>]
+runindock <environment> <command> [--rid:image=<docker_image>] [--rid:port=<container_port>] [--rid:tool=<build_tool>] [--rid:framework=<framework>]
 ```
 
 - `<environment>`: The environment or programming language (e.g., `go`, `node`).
 - `<command>`: The command you want to run inside Docker (e.g., `run main.go`).
-- `--image`: Optional. Specify a custom Docker image.
-- `--port`: Optional. Expose a port from the Docker container.
-- `--buildTool`: Optional. Specify a build tool (e.g., `maven`, `gradle`) for environments that support it.
+- `--rid:image`: Optional. Specify a custom Docker image.
+- `--rid:port`: Optional. Expose a port from the Docker container.
+- `--rid:tool`: Optional. Specify a build tool (e.g., `maven`, `gradle`) for environments that support it.
+- `--rid:framework`: Optional. Specify a framework (e.g., `laravel`, `symfony`) for languages that support it.
+- `rid`: Stands for (`runindock`), is used to separate between potential conflicts (like `--port` in case of **Laravel**).
 
 ## Supported Languages and Environments
 
@@ -130,12 +132,12 @@ java HelloWorld.class
 #### b. Running a Java Application:
 You can run a Spring Boot application directly using Maven:
 ```
-runindock mvn spring-boot:run --port=8080
+runindock mvn spring-boot:run --rid:port=8080
 ```
 Or package the application with Maven and run the generated JAR:
 ```
 runindock mvn clean package
-runindock java -jar target/spring-app-1.0-SNAPSHOT.jar --port=8080 --buildTool=maven
+runindock java -jar target/spring-app-1.0-SNAPSHOT.jar --rid:port=8080 --rid:tool=maven
 ```
 
 ### 3. Node.js:
@@ -149,7 +151,7 @@ runindock npm install express
 ```
 #### c. Launch your server (`index.js`) on a specific port:
 ```
-runindock node index.js --port=8080
+runindock node index.js --rid:port=8080
 ```
 
 ### 4. Rust:
@@ -184,13 +186,13 @@ This serves files from the public/ directory.
 #### c. Running a Laravel Application:
 If you're working with a Laravel application, you can serve it using the built-in Laravel development server:
 
-##### i. Install Laravel dependencies (if not already installed):
+##### i. Generate a project using your preferred framework (e.g. Laravel):
 ```
-runindock composer install
+runindock composer create-project laravel/laravel my-laravel-app --rid:framework=laravel
 ```
 ##### ii. Run the Laravel development server:
 ```
-runindock php artisan serve --host=localhost --port=8080
+runindock php artisan serve --host=localhost --port=8080 --rid:port=8080
 ```
 
 ## Contributing
