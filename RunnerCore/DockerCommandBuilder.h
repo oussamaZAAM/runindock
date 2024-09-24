@@ -56,7 +56,14 @@ public:
 
         // Add ports if any
         if (!port.empty()) {
-            dockerCommand += "-p " + port + ":" + port + " ";
+            size_t pos = port.find(":");
+            if (pos != std::string::npos) {
+                std::string hostPort = port.substr(0, pos);
+                std::string containerPort = port.substr(pos + 1);
+                dockerCommand += "-p " + hostPort + ":" + containerPort + " ";
+            } else {
+                dockerCommand += "-p " + port + ":" + port + " ";
+            }
         }
 
         // Add volumes
