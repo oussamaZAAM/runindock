@@ -10,23 +10,24 @@
 
 ## Installation
 
-### Linux / macOS / WSL
-1. Clone the repository:
-   ```
-   git clone https://github.com/oussamaZAAM/runindock.git
-   cd runindock
-   ```
-2. Run the installation script to make `runindock` globally available:
-   ```
-   ./install.sh
-   ```
-3. Now you can use the `runindock` command globally:
-   ```
-   runindock go run main.go
-   ```
-
 ### Windows
-For native Windows users, you can manually compile the project or run it inside **WSL**.
+1. Download the `runindock.exe` from the [Releases](https://github.com/runindock/releases) page.
+2. Move the `.exe` to `C:\Windows\System32` or any folder in your `PATH`.  
+   Alternatively, create a folder like `C:\runindock` and add it to your `PATH` by:
+   - Right-click on **This PC** or **My Computer**, select **Properties**.
+   - Click on **Advanced system settings** > **Environment Variables**.
+   - Find the **Path** variable, select it, and click **Edit**.
+   - Add `C:\runindock` and move your `.exe` there.
+3. Now, you can run the executable globally by typing `runindock` in any command prompt or terminal.
+
+### macOS / Linux
+1. Download the `runindock` binary from the [Releases](https://github.com/runindock/releases) page.
+2. Move it to `/usr/local/bin/`:
+   - `sudo mv runindock /usr/local/bin/`
+3. Make the binary executable:
+   - `sudo chmod +x /usr/local/bin/runindock`
+4. Run the program from any terminal by typing `runindock`.
+
 
 ## Usage
 
@@ -127,32 +128,70 @@ java HelloWorld.class
 ```
 
 #### b. Running a Java Application:
-You can run a Spring application directly using `mvn`:
+You can run a Spring Boot application directly using Maven:
 ```
 runindock mvn spring-boot:run --port=8080
 ```
-Or you can package it using Maven then run it with `java`
+Or package the application with Maven and run the generated JAR:
 ```
 runindock mvn clean package
-runindock java -jar spring-app-1.0-SNAPSHOT.jar --port=8080 --buildTool=maven
+runindock java -jar target/spring-app-1.0-SNAPSHOT.jar --port=8080 --buildTool=maven
 ```
 
 ### 3. Node.js:
-#### a. You can set up your project environment using `npm`:
+#### a. Set up your project environment using `npm`:
 ```
 runindock npm init
 ```
-#### b. You can also install packages for your project:
+#### b. Install packages for your project:
 ```
 runindock npm install express
 ```
-#### c. Finally you can launch your server (`index.js`) in a chosen port:
+#### c. Launch your server (`index.js`) on a specific port:
 ```
 runindock node index.js --port=8080
 ```
 
 ### 4. Rust:
+#### a. Compiling and Running a Rust Program:
+First, compile your Rust program:
+```
+runindock cargo build
+```
+Then, run the compiled binary:
+```
+runindock cargo run
+```
+#### b. Running Rust Tests:
+To run tests in your Rust project:
+```
+runindock cargo test
+```
 
+### 5. PHP:
+#### a. Running a PHP Script:
+To execute a standalone PHP script:
+```
+runindock php script.php
+```
+#### b. Running a PHP Development Server:
+You can start a simple PHP development server:
+```
+runindock php -S localhost:8080 -t public/
+```
+This serves files from the public/ directory.
+
+#### c. Running a Laravel Application:
+If you're working with a Laravel application, you can serve it using the built-in Laravel development server:
+
+##### i. Install Laravel dependencies (if not already installed):
+```
+runindock composer install
+```
+##### ii. Run the Laravel development server:
+```
+runindock php artisan serve --host=localhost --port=8080
+```
 
 ## Contributing
 
