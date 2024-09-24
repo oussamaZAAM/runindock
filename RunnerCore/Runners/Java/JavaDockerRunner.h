@@ -17,20 +17,17 @@ public:
         }
     }
 
-    virtual std::string getDefaultImage() const override {
+    std::string getDefaultImage() const override {
         return "openjdk:alpine";
     }
 
     // Automatically register the runner for both "java" and "javac" environments
+    // Automatically register the runner for the "python" environment
     static void registerRunner() {
         auto& registry = DockerRunnerRegistry::getInstance();
-        registerForEnvironments(registry, {"java", "javac"});
-    }
-
-    // Register multiple environments for a runner
-    static void registerForEnvironments(DockerRunnerRegistry& registry, const std::initializer_list<std::string>& environments) {
-        for (const auto& env : environments) {
-            registry.registerRunner(env, [](const std::string& image) -> std::unique_ptr<DockerRunner> {
+        // Register for multiple Python environments
+        for (const auto& env : {"java", "javac"}) {
+            registry.registerRunner(env, [](const std::string& image) {
                 return std::make_unique<JavaDockerRunner>(image);
             });
         }

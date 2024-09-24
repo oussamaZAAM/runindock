@@ -14,7 +14,7 @@ public:
     }
 
     // Return Gradle's default image
-    virtual std::string getDefaultImage() const override {
+    std::string getDefaultImage() const override {
         return "gradle:alpine";
     }
 

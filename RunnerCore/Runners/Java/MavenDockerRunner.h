@@ -14,7 +14,7 @@ public:
     }
 
     // Return Maven's default image
-    virtual std::string getDefaultImage() const override {
+    std::string getDefaultImage() const override {
         return "maven:latest";  // Specific Maven image with JDK 11
     }
 
@@ -27,7 +27,7 @@ public:
     }
 
     // Override the buildCommand method
-    virtual std::string buildCommand(const std::string& cwd, const std::string& command) const override {
+    std::string buildCommand(const std::string& cwd, const std::string& command) const override {
         DockerCommandBuilder builder;
 
         // Set the basic parameters of the Docker command
