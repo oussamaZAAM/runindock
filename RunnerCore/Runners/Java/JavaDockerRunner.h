@@ -38,11 +38,14 @@ public:
 
     virtual std::string buildCommand(const std::string& cwd, const std::string& command) const override {
         std::string tool = getOption("buildTool");
+        std::map<std::string, std::string> options = getOptions();
         if (tool == "maven"){
             MavenDockerRunner mavenRunner;
+            mavenRunner.setOptions(options);
             return mavenRunner.buildCommand(cwd, command);
         } else if (tool == "gradle") {
             GradleDockerRunner gradleRunner;
+            gradleRunner.setOptions(options);
             return gradleRunner.buildCommand(cwd, command);
         } else {
             DockerCommandBuilder builder;

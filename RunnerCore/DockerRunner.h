@@ -36,6 +36,9 @@ public:
     virtual ~DockerRunner() = default;
 
     // Functions to get and set options from main
+    std::map<std::string, std::string> getOptions() const {
+        return options;
+    }
     std::string getOption(const std::string& key, const std::string& defaultValue = "") const {
         auto it = options.find(key);
         return (it != options.end()) ? it->second : defaultValue;
@@ -44,6 +47,7 @@ public:
         options = opts;
     }
     void setOption(const std::string& key, const std::string& value) {
+        std::cout << "Setting option: " << key << " = " << value << std::endl;
         options[key] = value;
     }
 
