@@ -4,7 +4,7 @@
 #include "RunnerCore/Runners/NodeDockerRunner.h"
 #include "RunnerCore/Runners/Java/JavaDockerRunner.h"
 #include "RunnerCore/Runners/PythonDockerRunner.h"
-#include "RunnerCore/Runners/PhpDockerRunner.h"
+#include "RunnerCore/Runners/PHP/PhpDockerRunner.h"
 #include "RunnerCore/Runners/RustDockerRunner.h"
 #include <string>
 #include <unistd.h>
@@ -25,31 +25,34 @@ namespace {
     #undef X
 }
 
-// Function to parse all command-line options into a map
+// Function to parse all command-line options into a map, now using --rid:key=value format
 std::map<std::string, std::string> parseOptions(int& argc, char* argv[]) {
     std::map<std::string, std::string> options;
 
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
 
-        // Look for options in the form --key=value
-        size_t pos = arg.find("=");
-        if (pos != std::string::npos && arg.substr(0, 2) == "--") {
-            std::string key = arg.substr(2, pos - 2);   // Extract the key (without "--")
-            std::string value = arg.substr(pos + 1);    // Extract the value
-            options[key] = value;
+        // Look for options in the form --rid:key=value
+        if (arg.substr(0, 6) == "--rid:") {
+            size_t pos = arg.find("=");
+            if (pos != std::string::npos) {
+                std::string key = arg.substr(6, pos - 6);   // Extract the key (without "--rid:")
+                std::string value = arg.substr(pos + 1);    // Extract the value
+                options[key] = value;
 
-            // Remove this option from argv
-            for (int j = i; j < argc - 1; ++j) {
-                argv[j] = argv[j + 1];
+                // Remove this option from argv
+                for (int j = i; j < argc - 1; ++j) {
+                    argv[j] = argv[j + 1];
+                }
+                --argc;
+                --i;
             }
-            --argc;
-            --i;
         }
     }
 
     return options;
 }
+
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {
