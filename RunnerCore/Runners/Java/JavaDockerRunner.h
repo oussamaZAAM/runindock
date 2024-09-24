@@ -36,8 +36,8 @@ public:
         }
     }
 
-    virtual std::string buildCommand(const std::string& cwd, const std::string& command) const override {
-        std::string tool = getOption("buildTool");
+    std::string buildCommand(const std::string& cwd, const std::string& command) const override {
+        std::string tool = getOption("tool");
         std::map<std::string, std::string> options = getOptions();
         if (tool == "maven"){
             MavenDockerRunner mavenRunner;
