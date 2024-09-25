@@ -1,12 +1,12 @@
-#ifndef LARAVELDOCKERRUNNER_H
-#define LARAVELDOCKERRUNNER_H
+#ifndef SYMFONYDOCKERRUNNER_H
+#define SYMFONYDOCKERRUNNER_H
 
 #include "../../DockerRunner.h"
 #include "../../DockerRunnerRegistry.h"
 
-class LaravelDockerRunner : public DockerRunner {
+class SymfonyDockerRunner : public DockerRunner {
 public:
-    LaravelDockerRunner(const std::string& image = "") : DockerRunner() {}
+    SymfonyDockerRunner(const std::string& image = "") : DockerRunner() {}
 
     std::string getDefaultImage() const override {
         return "php:alpine";
@@ -18,7 +18,7 @@ public:
         // Register for multiple Python environments
         for (const auto& env : {"php", "composer"}) {
             registry.registerRunner(env, [](const std::string& image) {
-                return std::make_unique<LaravelDockerRunner>(image);
+                return std::make_unique<SymfonyDockerRunner>(image);
             });
         }
     }
@@ -41,6 +41,6 @@ public:
 };
 
 // Register the PhpyDockerRunner when this file is included
-static bool laravelRunnerRegistered = (LaravelDockerRunner::registerRunner(), true);
+static bool symfonyRunnerRegistered = (SymfonyDockerRunner::registerRunner(), true);
 
-#endif // LARAVELDOCKERRUNNER_H
+#endif // SYMFONYDOCKERRUNNER_H

@@ -4,6 +4,7 @@
 #include "../../DockerRunner.h"
 #include "../../DockerRunnerRegistry.h"
 #include "./LaravelDockerRunner.h"
+#include "./SymfonyDockerRunner.h"
 
 class PhpDockerRunner : public DockerRunner {
 public:
@@ -26,17 +27,15 @@ public:
 
     std::string buildCommand(const std::string& cwd, const std::string& command) const override {
         std::string framework = getOption("framework");
-        
-        std::cout << "Framework: " + framework << std::endl;
         std::map<std::string, std::string> options = getOptions();
         if (framework == "laravel"){
             LaravelDockerRunner laravelRunner;
             laravelRunner.setOptions(options);
             return laravelRunner.buildCommand(cwd, command);
-        // } else if (framework == "gradle") {
-        //     GradleDockerRunner gradleRunner;
-        //     gradleRunner.setOptions(options);
-        //     return gradleRunner.buildCommand(cwd, command);
+        } else if (framework == "symfony") {
+            SymfonyDockerRunner symfonyRunner;
+            symfonyRunner.setOptions(options);
+            return symfonyRunner.buildCommand(cwd, command);
         } else {
             DockerCommandBuilder builder;
             
