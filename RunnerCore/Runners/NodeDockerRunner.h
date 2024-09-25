@@ -14,12 +14,13 @@ public:
 
     // Automatically register the runner for the "node" environment
     static void registerRunner() {
-        DockerRunnerRegistry::getInstance().registerRunner("node", [](const std::string& image) {
-            return std::make_unique<NodeDockerRunner>(image);
-        });
-        DockerRunnerRegistry::getInstance().registerRunner("npm", [](const std::string& image) {
-            return std::make_unique<NodeDockerRunner>(image);
-        });
+        auto& registry = DockerRunnerRegistry::getInstance();
+        // Register for multiple Node environments
+        for (const auto& env : {"node", "npm"}) {
+            registry.registerRunner(env, [](const std::string& image) {
+                return std::make_unique<NodeDockerRunner>(image);
+            });
+        }
     }
 
     void preRunHook(std::string& dockerCommand) const {

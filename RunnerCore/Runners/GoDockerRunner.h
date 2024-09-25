@@ -15,9 +15,13 @@ public:
 
     // Automatically register the runner for the "go" environment
     static void registerRunner() {
-        DockerRunnerRegistry::getInstance().registerRunner("go", [](const std::string& image) {
-            return std::make_unique<GoDockerRunner>(image);
-        });
+        auto& registry = DockerRunnerRegistry::getInstance();
+        // Register for multiple Go environments
+        for (const auto& env : {"go"}) {
+            registry.registerRunner(env, [](const std::string& image) {
+                return std::make_unique<GoDockerRunner>(image);
+            });
+        }
     }
 };
 

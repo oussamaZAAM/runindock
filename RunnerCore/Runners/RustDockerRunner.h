@@ -14,12 +14,13 @@ public:
 
     // Automatically register the runner for the "rust" environment
     static void registerRunner() {
-        DockerRunnerRegistry::getInstance().registerRunner("cargo", [](const std::string& image) {
-            return std::make_unique<RustDockerRunner>(image);
-        });
-        DockerRunnerRegistry::getInstance().registerRunner("rustc", [](const std::string& image) {
-            return std::make_unique<RustDockerRunner>(image);
-        });
+        auto& registry = DockerRunnerRegistry::getInstance();
+        // Register for multiple Rust environments
+        for (const auto& env : {"rustc", "cargo"}) {
+            registry.registerRunner(env, [](const std::string& image) {
+                return std::make_unique<RustDockerRunner>(image);
+            });
+        }
     }
 
      // Overriding the constructCommand function to handle Rust commands
