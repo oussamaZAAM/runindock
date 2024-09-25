@@ -9,7 +9,7 @@ public:
     RustDockerRunner(const std::string& image = "") : DockerRunner() {}
 
     std::string getDefaultImage() const override {
-        return "rust";
+        return "rust:slim";
     }
 
     // Automatically register the runner for the "rust" environment
