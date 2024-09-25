@@ -32,7 +32,8 @@ public:
         // Set the basic parameters for the Docker command
         builder.setWorkingDirectory(cwd)
                .setDockerImage(getDockerImage())
-               .setPort(port);
+               .setPort(port)
+               .addVolume("rust_shared_vol:/usr/local/cargo/registry/");
 
         // Construct command based on whether it uses rustc or cargo
         if (command.find("rustc") == 0) {
