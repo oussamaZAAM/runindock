@@ -176,10 +176,14 @@ To execute a standalone PHP script:
 ```
 runindock php script.php
 ```
-#### b. Running a PHP Development Server:
-You can start a simple PHP development server:
+#### b. Running a Symfony application:
+After generating a project using:
 ```
-runindock php -S localhost:8080 -t public/
+runindock composer create-project symfony/skeleton my_project --rid:framework=symfony
+```
+You can run a simple PHP development server:
+```
+runindock php -S 0.0.0.0:8080 -t public/ --rid:port=8080
 ```
 This serves files from the public/ directory.
 
@@ -192,7 +196,7 @@ runindock composer create-project laravel/laravel my-laravel-app --rid:framework
 ```
 ##### ii. Run the Laravel development server:
 ```
-runindock php artisan serve --host=localhost --port=8080 --rid:port=8080
+runindock php artisan serve --host=0.0.0.0 --port=8080 --rid:port=8080
 ```
 
 ## Contributing
