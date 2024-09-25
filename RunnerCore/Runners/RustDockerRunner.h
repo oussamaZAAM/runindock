@@ -9,7 +9,7 @@ public:
     RustDockerRunner(const std::string& image = "") : DockerRunner() {}
 
     std::string getDefaultImage() const override {
-        return "rust:alpine";
+        return "rust";
     }
 
     // Automatically register the runner for the "rust" environment
@@ -31,8 +31,7 @@ public:
         // Set the basic parameters for the Docker command
         builder.setWorkingDirectory(cwd)
                .setDockerImage(getDockerImage())
-               .setPort(port)
-               .addPreRunCommand("apk add --no-cache musl-dev build-base");
+               .setPort(port);
 
         // Construct command based on whether it uses rustc or cargo
         if (command.find("rustc") == 0) {

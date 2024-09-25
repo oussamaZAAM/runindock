@@ -155,7 +155,13 @@ runindock node index.js --rid:port=8080
 ```
 
 ### 4. Rust:
-#### a. Compiling and Running a Rust Program:
+#### a. Generating a Rust project:
+To generate a Rust project:
+```
+runindock cargo new my-rust-project
+```
+
+#### b. Compiling and Running a Rust Program:
 First, compile your Rust program:
 ```
 runindock cargo build
@@ -163,11 +169,6 @@ runindock cargo build
 Then, run the compiled binary:
 ```
 runindock cargo run
-```
-#### b. Running Rust Tests:
-To run tests in your Rust project:
-```
-runindock cargo test
 ```
 
 ### 5. PHP:
