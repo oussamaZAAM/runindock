@@ -8,6 +8,7 @@
 #include "RunnerCore/Runners/RustDockerRunner.h"
 #include "RunnerCore/Runners/CCppDockerRunner.h"
 #include "RunnerCore/Runners/PerlDockerRunner.h"
+#include "RunnerCore/Runners/RubyDockerRunner.h"
 #include <string>
 #include <unistd.h>
 #include <memory>
@@ -21,7 +22,8 @@
     X(PhpDockerRunner) \
     X(RustDockerRunner) \
     X(CCppDockerRunner) \
-    X(PerlDockerRunner)
+    X(PerlDockerRunner) \
+    X(RubyDockerRunner)
 
 namespace {
     #define X(runner) bool runner##Registered = (runner::registerRunner(), true);
