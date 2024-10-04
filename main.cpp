@@ -6,6 +6,8 @@
 #include "RunnerCore/Runners/PythonDockerRunner.h"
 #include "RunnerCore/Runners/PHP/PhpDockerRunner.h"
 #include "RunnerCore/Runners/RustDockerRunner.h"
+#include "RunnerCore/Runners/CCppDockerRunner.h"
+#include "RunnerCore/Runners/PerlDockerRunner.h"
 #include <string>
 #include <unistd.h>
 #include <memory>
@@ -17,7 +19,9 @@
     X(JavaDockerRunner) \
     X(PythonDockerRunner) \
     X(PhpDockerRunner) \
-    X(RustDockerRunner)
+    X(RustDockerRunner) \
+    X(CCppDockerRunner) \
+    X(PerlDockerRunner)
 
 namespace {
     #define X(runner) bool runner##Registered = (runner::registerRunner(), true);
