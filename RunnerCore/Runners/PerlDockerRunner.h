@@ -16,7 +16,7 @@ public:
     // Automatically register the runner for the "perl" environment
     static void registerRunner() {
         auto& registry = DockerRunnerRegistry::getInstance();
-        // Register for multiple C/C++ environments
+        // Register for multiple Perl environments
         for (const auto& env : {"perl"}) {
             registry.registerRunner(env, [](const std::string& image) {
                 return std::make_unique<PerlDockerRunner>(image);

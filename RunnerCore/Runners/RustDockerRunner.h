@@ -23,7 +23,7 @@ public:
         }
     }
 
-     // Overriding the constructCommand function to handle Rust commands
+    // Overriding the constructCommand function to handle Rust commands
     std::string buildCommand(const std::string& cwd, const std::string& command) const override {
         DockerCommandBuilder builder;
 
